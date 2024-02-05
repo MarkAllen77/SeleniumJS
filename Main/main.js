@@ -1,5 +1,6 @@
-const {Builder, By, Key} = require ('selenium-webdriver')
+const {Builder, By, Key, until} = require ('selenium-webdriver')
 const assert = require('assert')
+const driver = new Builder().forBrowser('chrome').build()
 
 // const chrome = require('selenium-webdriver/chrome')
 // const options = new chrome.Options()
@@ -8,7 +9,7 @@ const assert = require('assert')
 // options.addArguments('excludeSwitches', ['enable-logging'])
 // const driver = new Builder().forBrowser('chrome').setChromeOptions(options).build()
 
-const driver = new Builder().forBrowser('chrome').build()
+
 
 async function HandleInputandRadio()
 {   
@@ -55,7 +56,7 @@ async function HandleInputandRadio()
 
 async function HandleDropdown()
 {
-    await driver.get('https://testautomationpractice.blogspot.com/');
+    await driver.get('https://testautomationpractice.blogspot.com/')
 
     await driver.findElement({id: 'country'})
     await driver.sleep(1000)
@@ -76,7 +77,7 @@ async function HandleDropdown()
 
 async function HandleMultiDropdown()
 {
-    await driver.get('https://testautomationpractice.blogspot.com/');
+    await driver.get('https://testautomationpractice.blogspot.com/')
 
     const colorsSelect = await driver.findElement(By.xpath('//select[@id="colors"]'))
 
@@ -100,7 +101,7 @@ async function HandleMultiDropdown()
 
 async function HandleBootstrapDropdown()
 {
-    await driver.get('https://www.jquery-az.com/boots/demo.php?ex=63.0_2');
+    await driver.get('https://www.jquery-az.com/boots/demo.php?ex=63.0_2')
 
     const outputButton = await driver.findElement(By.xpath('//button'))
     const outputOptions = await driver.findElements(By.xpath('//ul//li//label//input'))
@@ -130,9 +131,100 @@ async function HandleBootstrapDropdown()
 }
 
 
+async function HandleAutoSuggestion()
+{
+    await driver.get('https://www.redbus.in/')
+
+    const autoDropdown = await driver.findElement(By.xpath('//input[@id="src"]'))
+
+    await autoDropdown.sendKeys('Delhi')
+
+    // await driver.sleep(2000)        
+    await driver.wait(until.elementLocated(By.xpath('//li[contains(@class,"sc-iwsKbI")]/div/text[1]')), 3000)
+
+    let autoDropDownOptions = await driver.findElements(By.xpath('//li[contains(@class,"sc-iwsKbI")]/div/text[1]'))
+
+    for (let option of autoDropDownOptions)
+    {
+        let value = await option.getAttribute('innerText')
+        console.log(value)
+
+        if (value.includes('RK Ashram'))
+        {
+            await option.click()
+            break;
+        }
+    }
+}
+
+
+async function HandleHiddenItems()
+{
+    await driver.get('https://opensource-demo.orangehrmlive.com/')
+
+    await driver.wait(until.elementLocated(By.xpath('//input[@name="username"]')), 5000)
+
+    const usernameInput = await driver.findElement(By.xpath('//input[@name="username"]'))
+    const passwordInput = await driver.findElement(By.xpath('//input[@name="password"]'))
+    const submitButton = await driver.findElement(By.xpath('//button[@type="submit"]'))
+
+    await usernameInput.sendKeys('Admin')
+    await passwordInput.sendKeys('admin123')
+    await submitButton.click()
+}
+
+
+async function HandleDialogsAlerts()
+{
+    await driver.get('https://testautomationpractice.blogspot.com/')
+
+    const alertButton = await driver.findElement(By.xpath('//button[text()="Alert"]'))
+    const confirmButton = await driver.findElement(By.xpath('//button[text()="Confirm Box"]'))
+    const promptButton = await driver.findElement(By.xpath('//button[text()="Prompt"]'))
+    const promptMessage = await driver.findElement(By.xpath('//p[@id="demo"]'))
+
+    await alertButton.click()
+    await driver.sleep(2000)  
+    await driver.wait(until.alertIsPresent());   
+    let alert = await driver.switchTo().alert();
+    let alertText = await alert.getText();
+    console.log(alertText)
+    await alert.accept();
+
+    await confirmButton.click()
+    await driver.sleep(2000)  
+    await driver.wait(until.alertIsPresent());
+    let confirm = await driver.switchTo().alert();
+    let confirmText = await confirm.getText();
+    console.log(confirmText)
+    await confirm.dismiss();
+
+    await promptButton.click()
+    await driver.sleep(1000)  
+    await driver.wait(until.alertIsPresent());
+    let prompt = await driver.switchTo().alert();
+    await prompt.sendKeys("Selenium4");
+    await driver.sleep(2000) 
+    await prompt.accept();
+    let value = await promptMessage.getText()
+    console.log(value)
+
+    assert.equal(value,'Hello Selenium4! How are you today?')
+}
+
+
+async function HandleFramesiFrames()
+{
+    await driver.get('https://testautomationpractice.blogspot.com/')
+
+    const alertButton = await driver.findElement(By.xpath('//button[text()="Alert"]'))
+    const confirmButton = await driver.findElement(By.xpath('//button[text()="Confirm Box"]'))
+    
+}
+
 async function HandleWindows()
 {
-    await driver.get('https://ratings.fide.com/');
+    await driver.get('https://testautomationpractice.blogspot.com/')
 
     const fullNameList = await driver.findElements(By.xpath('//td//a'))
 
@@ -145,16 +237,20 @@ async function HandleWindows()
 
 async function StartTest()
 {
-    //await HandleInputandRadio()
-    //await HandleDropdown()
-    //await HandleMultiDropdown()
-    await HandleBootstrapDropdown()
-    //await HandleWindows()
+    // await HandleInputandRadio()
+    // await HandleDropdown()
+    // await HandleMultiDropdown()
+    // await HandleBootstrapDropdown()
+    // await HandleAutoSuggestion()
+    // await HandleHiddenItems()
+    // await HandleDialogsAlerts()
+    await HandleFramesiFrames()
+    // await HandleWindows()
 
     // setInterval(function(){
         
     // }, 5000)
-    await driver.sleep(5000)
+    await driver.sleep(4000)
     await driver.quit()
 }
 
