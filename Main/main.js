@@ -215,12 +215,108 @@ async function HandleDialogsAlerts()
 
 async function HandleFramesiFrames()
 {
+    await driver.get('https://ui.vision/demo/webtest/frames/')
+
+    driver.wait(async function() {
+        const readyState = await driver.executeScript('return document.readyState')
+        return readyState === 'complete'
+    });
+
+    const frameWindow = await driver.findElements(By.xpath('//frame'))
+    console.log('Number of frames: ', frameWindow.length)
+
+    //approach 1: using locator
+    await driver.switchTo().defaultContent()
+    const frame1 = await driver.findElement(By.xpath('//frame[@src="frame_1.html"]'))
+    await driver.switchTo().frame(frame1)
+    const frame1Input = await driver.findElement(By.xpath('//input[@name="mytext1"]'))
+    await frame1Input.sendKeys('This is frame 1')
+
+    //approach 2: using index
+    await driver.switchTo().defaultContent()
+    await driver.switchTo().frame(4)
+    const frame5Input = await driver.findElement(By.xpath('//input[@name="mytext5"]'))
+    await frame5Input.sendKeys('This is frame 5')
+
+    //nested
+    await driver.switchTo().defaultContent()
+    const frame3 = await driver.findElement(By.xpath('//frame[@src="frame_3.html"]'))
+    await driver.switchTo().frame(frame3)
+    const frame3Input = await driver.findElement(By.xpath('//input[@name="mytext3"]'))
+    await frame3Input.sendKeys('This is frame 3')
+
+    const iframe = driver.findElement(By.css('iframe'))
+    await driver.switchTo().frame(iframe)
+    const frame3Radio = await driver.findElement(By.xpath('//div[@id="i5"]/div[3]/div'))
+    driver.executeScript("arguments[0].scrollIntoView()", frame3Radio)
+    driver.sleep(2000)
+    await frame3Radio.click()
+}
+
+
+async function HandleWebTablePagination()
+{
     await driver.get('https://testautomationpractice.blogspot.com/')
 
-    const alertButton = await driver.findElement(By.xpath('//button[text()="Alert"]'))
-    const confirmButton = await driver.findElement(By.xpath('//button[text()="Confirm Box"]'))
+    let tableLabel = await driver.findElement(By.xpath('//h2[text()="Pagination Table"]'))
+    driver.executeScript("arguments[0].scrollIntoView()", tableLabel)
+
+    let paginationTable = await driver.findElement(By.xpath('//table[@id="productTable"]'))
+    let columns = await paginationTable.findElements(By.css('thead tr th'))
+    let rows = await paginationTable.findElements(By.css('tbody tr'))
+
+    let rowsCells = await paginationTable.findElements(By.css('tbody tr td'))
+
+    console.log('Number of columns: ', columns.length)
+    console.log('Number of rows: ', rows.length)
+
+    //select checkbox
+    let matchedRow = await driver.findElement(By.xpath('//td[text()="Product 2"]//following-sibling::td//input'))
+    await matchedRow.click()
+
+    selectProduct("Product 4")
+    selectProduct("Product 5")
+
+    let rowArray = []
+    let index = 0
+
+    for (let elements of rowsCells) {
+        rowArray[index] = await elements.getText()
+
+        index++
+        if (index == 4){
+            console.log(rowArray)
+            index = 0
+        }
+    }
+
+    let pages = await driver.findElements(By.xpath('//ul[@id="pagination"]//li//a'))
+    for (let page of pages) {
+        console.log(await page.getText())
+        page.click()
+
+        rows = await paginationTable.findElements(By.css('tbody tr'))
+        for (let elements of rows) {
+            console.log(await elements.getText())
+        }
+    }
+}
+
+
+async function selectProduct(productName){
+    const matchedRow = await driver.findElement(By.xpath('//td[text()="'+ productName +'"]//following-sibling::td//input'))
+    await matchedRow.click()
+}
+
+
+async function HandleDatePickers()
+{
+    await driver.get('https://testautomationpractice.blogspot.com/')
+
+    let tableLabel = await driver.findElement(By.xpath('//h2[text()="Pagination Table"]'))
     
 }
+
 
 async function HandleWindows()
 {
@@ -235,6 +331,7 @@ async function HandleWindows()
     
 }
 
+
 async function StartTest()
 {
     // await HandleInputandRadio()
@@ -244,13 +341,15 @@ async function StartTest()
     // await HandleAutoSuggestion()
     // await HandleHiddenItems()
     // await HandleDialogsAlerts()
-    await HandleFramesiFrames()
+    // await HandleFramesiFrames()
+    // await HandleWebTablePagination()
+    await HandleDatePickers()
     // await HandleWindows()
 
     // setInterval(function(){
         
     // }, 5000)
-    await driver.sleep(4000)
+    await driver.sleep(3000)
     await driver.quit()
 }
 
