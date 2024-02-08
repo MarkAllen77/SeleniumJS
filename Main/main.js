@@ -9,7 +9,7 @@ const driver = new Builder().forBrowser('chrome').build()
 // options.addArguments('excludeSwitches', ['enable-logging'])
 // const driver = new Builder().forBrowser('chrome').setChromeOptions(options).build()
 
-
+let originalWindow
 
 async function HandleInputandRadio()
 {   
@@ -313,42 +313,253 @@ async function HandleDatePickers()
 {
     await driver.get('https://testautomationpractice.blogspot.com/')
 
-    let tableLabel = await driver.findElement(By.xpath('//h2[text()="Pagination Table"]'))
+    let colorsLabel = await driver.findElement(By.xpath('//label[text()="Colors:"]'))
+    driver.executeScript("arguments[0].scrollIntoView()", colorsLabel)
     
+    //direct type date
+    let datePicker = await driver.findElement(By.xpath('//input[@id="datepicker"]'))
+    await datePicker.click()
+    await datePicker.sendKeys('12/12/2023')
+    await driver.actions().keyDown(Key.TAB).perform()
+
+    //using date picker
+    const dateString  = '3/15/2024'
+    const dateStringSplit = dateString.split('/')
+    const monthName = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+    const month = monthName[dateStringSplit[0]-1]
+    const day = dateStringSplit[1]
+    const year = dateStringSplit[2]
+
+    await datePicker.click()
+    while(true)
+    {
+        const displayedYear = await driver.findElement(By.xpath('//span[@class="ui-datepicker-year"]')).getText()
+        const displayedMonth = await driver.findElement(By.xpath('//span[@class="ui-datepicker-month"]')).getText()
+
+        if(displayedYear == year && displayedMonth == month)
+        {
+            break;
+        }
+
+        await driver.findElement(By.xpath('//span[text()="Next"]')).click()
+    }
+
+    await driver.findElement(By.xpath('//a[@class="ui-state-default"][text()="' + day + '"]')).click()
+    await driver.actions().keyDown(Key.TAB).perform()
+
+    await driver.sleep(2000)
 }
 
 
-async function HandleWindows()
+async function HandleMouseActions()
 {
-    await driver.get('https://testautomationpractice.blogspot.com/')
+    // //-----How to handle Mouse Hover-----
+    // await driver.get('https://demo.opencart.com/')
 
-    const fullNameList = await driver.findElements(By.xpath('//td//a'))
+    // let desktopsLabel = await driver.findElement(By.xpath('//a[text()="Desktops"]'))
+    // let macLabel = await driver.findElement(By.xpath('//a[text()="Mac (1)"]'))
 
-    for (let fullName of fullNameList)
-    {
-        console.log(await fullName.getText())
-    }    
+    // const actions = driver.actions({async: true})
+    // await actions.move({origin: desktopsLabel}).perform()
+    // await actions.move({origin: macLabel}).perform()
+
+    // await driver.sleep(2000)
+
+    //-----How to handle Mouse Right Click-----
+    await driver.get('https://swisnl.github.io/jQuery-contextMenu/demo.html')
     
+    const buttonRightClick = await driver.findElement(By.xpath('//span[@class="context-menu-one btn btn-neutral"]'))
+    let actions = driver.actions({async: true})
+    await actions.contextClick(buttonRightClick).perform()
+
+    const pasteContext = await driver.findElement(By.xpath('//span[normalize-space()="Paste"]'))
+    await actions.move({origin: pasteContext}).perform()
+
+    await driver.sleep(2000)
+
+    //-----How to handle Mouse Double Click-----
+    await driver.get('https://testautomationpractice.blogspot.com/')
+    
+    const buttonDoubleClick = await driver.findElement(By.xpath('//button[text()="Copy Text"]'))
+    actions = driver.actions({async: true})
+    await actions.doubleClick(buttonDoubleClick).perform()
+
+    const field1 = await driver.findElement(By.xpath('//input[@id="field1"]')).getAttribute('value')
+    console.log("Text is: ", field1)
+
+    const field2 = await driver.findElement(By.xpath('//input[@id="field2"]')).getAttribute('value')
+    assert.strictEqual(field1, field2)
+
+    //-----How to handle Mouse Drag and Drop-----
+    const draggable = driver.findElement(By.xpath('//div[@id="draggable"]'))
+    const droppable = driver.findElement(By.xpath('//div[@id="droppable"]'))
+
+    actions = driver.actions({async: true})
+    await actions.dragAndDrop(draggable, droppable).perform()
+}
+
+
+async function HandleKeyboardActions()
+{
+    await driver.get('https://gotranscript.com/text-compare/')
+
+    const fromTextArea = await driver.findElement(By.xpath('//textarea[@name="text1"]'))
+    const toTextArea = await driver.findElement(By.xpath('//textarea[@name="text2"]'))
+    const buttonCompare = await driver.findElement(By.xpath('//button[@id="recaptcha"]'))
+
+    await fromTextArea.sendKeys('Hello World was here')
+    await fromTextArea.click()
+
+    await driver.actions()
+        .keyDown(Key.CONTROL)
+        .sendKeys('a')
+        .keyDown(Key.CONTROL)
+        .sendKeys('c')
+        .perform()
+
+    await toTextArea.click()
+    await driver.actions()
+        .keyDown(Key.CONTROL)
+        .sendKeys('v')
+        .perform()
+
+    await buttonCompare.click()
+    await driver.sleep(2000)
+}
+
+
+async function HandleUploadFiles()
+{
+    await driver.sleep(2000)
+    await driver.get('https://www.foundit.in/')
+    await driver.wait(until.elementLocated(By.xpath('//i[@class="mqfihd-upload"]')), 3000)
+
+    //upload single file
+    const uploadButton = await driver.findElement(By.xpath('//i[@class="mqfihd-upload"]'))
+    const windowsUpload = await driver.findElement(By.xpath('//input[@id="file-upload"]'))
+
+    await uploadButton.click()
+    await windowsUpload.sendKeys('C:/Temp/sample1.txt')
+
+    //upload mulitple file
+    await driver.get('https://davidwalsh.name/demo/multiple-file-upload.php')
+
+    let noFilesLabel = await driver.findElement(By.xpath('//ul[@id="fileList"]/li')).getText()
+    assert.equal(noFilesLabel,'No Files Selected')
+
+    const filesToUploadButton = await driver.findElement(By.xpath('//input[@id="filesToUpload"]'))
+    await filesToUploadButton.sendKeys("C:/Temp/sample1.txt \n C:/Temp/sample2.txt");
+
+    const fileName1 = await driver.findElement(By.xpath('//ul[@id="fileList"]/li[1]')).getText()
+    const fileName2 = await driver.findElement(By.xpath('//ul[@id="fileList"]/li[2]')).getText()
+
+    assert.equal(fileName1,'sample1.txt')
+    assert.equal(fileName2,'sample2.txt')
+}
+
+
+async function HandlePagesWindows()
+{
+    await driver.get('https://opensource-demo.orangehrmlive.com/')
+    originalWindow = await driver.getWindowHandle()
+    assert.equal(await driver.getTitle(),'OrangeHRM')
+
+    await driver.switchTo().newWindow('tab')
+    await driver.get('https://www.orangehrm.com/')
+    const tabWindow = await driver.getWindowHandle()
+    assert.equal(await driver.getTitle(),'OrangeHRM HR Software | OrangeHRM')
+
+    await driver.switchTo().newWindow('window')
+    await driver.get('https://www.google.com/')
+    const newWindow = await driver.getWindowHandle()
+    assert.equal(await driver.getTitle(),'Google')
+    await driver.sleep(2000)
+    await driver.close()
+
+    console.log('Original Window: ', originalWindow)
+    console.log('Tab Window: ', tabWindow)
+    console.log('New Window: ', newWindow)
+
+    const totalWindows = (await driver.getAllWindowHandles()).length
+    console.log('Number of Window(s): ', totalWindows)
+
+    await driver.switchTo().window(tabWindow)
+    await driver.sleep(1000)
+    await driver.close()
+}
+
+
+async function HandleMultiplePagesWindows()
+{
+    //Original Window
+    await driver.switchTo().window(originalWindow)
+    await driver.get('https://opensource-demo.orangehrmlive.com/')
+    originalWindow = await driver.getWindowHandle()
+    assert.equal(await driver.getTitle(),'OrangeHRM')
+
+    await driver.wait(until.elementsLocated(By.xpath('//a[text()="OrangeHRM, Inc"]')), 10000)
+
+    const orangeLink = await driver.findElement(By.xpath('//a[text()="OrangeHRM, Inc"]'))
+    await orangeLink.click()
+
+    //New Tab   
+    const openWindows = await driver.getAllWindowHandles();
+    await driver.switchTo().window(openWindows[1]);
+
+    const tabWindow = await driver.getWindowHandle()
+    assert.equal(await driver.getTitle(),'OrangeHRM HR Software | OrangeHRM')
+
+    //New Window
+    await driver.switchTo().newWindow('window')
+    await driver.get('https://www.google.com/')
+    const newWindow = await driver.getWindowHandle()
+    assert.equal(await driver.getTitle(),'Google')
+    await driver.sleep(2000)
+
+    console.log('Original Window: ', originalWindow)
+    console.log('Tab Window: ', tabWindow)
+    console.log('New Window: ', newWindow)
+
+    const totalWindows = (await driver.getAllWindowHandles()).length
+    console.log('Number of Window(s): ', totalWindows)
+
+    await driver.switchTo().window(originalWindow)
+    const usernameInput = await driver.findElement(By.xpath('//input[@placeholder="Username"]'))
+    usernameInput.sendKeys('username123')
+    await driver.sleep(3000)
+ 
+    await driver.switchTo().window(tabWindow)
+    const emailInput = await driver.findElement(By.xpath('//input[@id="Form_submitForm_EmailHomePage"]'))
+    emailInput.sendKeys('username123@email.com')
+    await driver.sleep(3000)
+
+    await driver.switchTo().window(newWindow)
+    const searchInput = await driver.findElement(By.xpath('//textarea[@name="q"]'))
+    searchInput.sendKeys('selenium node')
+    await driver.sleep(3000)
+    await driver.close()
 }
 
 
 async function StartTest()
 {
-    // await HandleInputandRadio()
-    // await HandleDropdown()
-    // await HandleMultiDropdown()
-    // await HandleBootstrapDropdown()
-    // await HandleAutoSuggestion()
-    // await HandleHiddenItems()
-    // await HandleDialogsAlerts()
-    // await HandleFramesiFrames()
-    // await HandleWebTablePagination()
+    await HandleInputandRadio()
+    await HandleDropdown()
+    await HandleMultiDropdown()
+    await HandleBootstrapDropdown()
+    await HandleAutoSuggestion()
+    await HandleHiddenItems()
+    await HandleDialogsAlerts()
+    await HandleFramesiFrames()
+    await HandleWebTablePagination()
     await HandleDatePickers()
-    // await HandleWindows()
+    await HandleMouseActions()
+    await HandleKeyboardActions()
+    await HandleUploadFiles()
+    await HandlePagesWindows()
+    await HandleMultiplePagesWindows()
 
-    // setInterval(function(){
-        
-    // }, 5000)
     await driver.sleep(3000)
     await driver.quit()
 }
