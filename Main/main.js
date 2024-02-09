@@ -1,5 +1,6 @@
-const {Builder, By, Key, until} = require ('selenium-webdriver')
-const assert = require('assert')
+import { Builder, By, Key, until } from 'selenium-webdriver'
+import { strictEqual, equal } from 'assert'
+import { writeFileSync } from 'fs'
 const driver = new Builder().forBrowser('chrome').build()
 
 // const chrome = require('selenium-webdriver/chrome')
@@ -23,7 +24,7 @@ async function HandleInputandRadio()
 
     console.log('Firstname value: ', await firstnameInput.getAttribute('value'))
 
-    assert.strictEqual(await firstnameInput.getAttribute('value'), 'John')
+    strictEqual(await firstnameInput.getAttribute('value'), 'John')
 
 
     const genderMaleLabel = await driver.findElement(By.xpath('//label[normalize-space()="Male"]'))
@@ -69,7 +70,7 @@ async function HandleDropdown()
 
     console.log(await countryDropdown.getAttribute('value'))
 
-    assert.equal(await countryDropdown.getAttribute('value'),'india')
+    equal(await countryDropdown.getAttribute('value'),'india')
 
     await driver.findElement(By.css('#country > option:nth-child(6)')).click();
 }
@@ -209,7 +210,7 @@ async function HandleDialogsAlerts()
     let value = await promptMessage.getText()
     console.log(value)
 
-    assert.equal(value,'Hello Selenium4! How are you today?')
+    equal(value,'Hello Selenium4! How are you today?')
 }
 
 
@@ -389,7 +390,7 @@ async function HandleMouseActions()
     console.log("Text is: ", field1)
 
     const field2 = await driver.findElement(By.xpath('//input[@id="field2"]')).getAttribute('value')
-    assert.strictEqual(field1, field2)
+    strictEqual(field1, field2)
 
     //-----How to handle Mouse Drag and Drop-----
     const draggable = driver.findElement(By.xpath('//div[@id="draggable"]'))
@@ -446,7 +447,7 @@ async function HandleUploadFiles()
     await driver.get('https://davidwalsh.name/demo/multiple-file-upload.php')
 
     let noFilesLabel = await driver.findElement(By.xpath('//ul[@id="fileList"]/li')).getText()
-    assert.equal(noFilesLabel,'No Files Selected')
+    equal(noFilesLabel,'No Files Selected')
 
     const filesToUploadButton = await driver.findElement(By.xpath('//input[@id="filesToUpload"]'))
     await filesToUploadButton.sendKeys("C:/Temp/sample1.txt \n C:/Temp/sample2.txt");
@@ -454,8 +455,8 @@ async function HandleUploadFiles()
     const fileName1 = await driver.findElement(By.xpath('//ul[@id="fileList"]/li[1]')).getText()
     const fileName2 = await driver.findElement(By.xpath('//ul[@id="fileList"]/li[2]')).getText()
 
-    assert.equal(fileName1,'sample1.txt')
-    assert.equal(fileName2,'sample2.txt')
+    equal(fileName1,'sample1.txt')
+    equal(fileName2,'sample2.txt')
 }
 
 
@@ -463,17 +464,17 @@ async function HandlePagesWindows()
 {
     await driver.get('https://opensource-demo.orangehrmlive.com/')
     originalWindow = await driver.getWindowHandle()
-    assert.equal(await driver.getTitle(),'OrangeHRM')
+    equal(await driver.getTitle(),'OrangeHRM')
 
     await driver.switchTo().newWindow('tab')
     await driver.get('https://www.orangehrm.com/')
     const tabWindow = await driver.getWindowHandle()
-    assert.equal(await driver.getTitle(),'OrangeHRM HR Software | OrangeHRM')
+    equal(await driver.getTitle(),'OrangeHRM HR Software | OrangeHRM')
 
     await driver.switchTo().newWindow('window')
     await driver.get('https://www.google.com/')
     const newWindow = await driver.getWindowHandle()
-    assert.equal(await driver.getTitle(),'Google')
+    equal(await driver.getTitle(),'Google')
     await driver.sleep(2000)
     await driver.close()
 
@@ -496,7 +497,7 @@ async function HandleMultiplePagesWindows()
     await driver.switchTo().window(originalWindow)
     await driver.get('https://opensource-demo.orangehrmlive.com/')
     originalWindow = await driver.getWindowHandle()
-    assert.equal(await driver.getTitle(),'OrangeHRM')
+    equal(await driver.getTitle(),'OrangeHRM')
 
     await driver.wait(until.elementsLocated(By.xpath('//a[text()="OrangeHRM, Inc"]')), 10000)
 
@@ -508,13 +509,13 @@ async function HandleMultiplePagesWindows()
     await driver.switchTo().window(openWindows[1]);
 
     const tabWindow = await driver.getWindowHandle()
-    assert.equal(await driver.getTitle(),'OrangeHRM HR Software | OrangeHRM')
+    equal(await driver.getTitle(),'OrangeHRM HR Software | OrangeHRM')
 
     //New Window
     await driver.switchTo().newWindow('window')
     await driver.get('https://www.google.com/')
     const newWindow = await driver.getWindowHandle()
-    assert.equal(await driver.getTitle(),'Google')
+    equal(await driver.getTitle(),'Google')
     await driver.sleep(2000)
 
     console.log('Original Window: ', originalWindow)
@@ -542,6 +543,41 @@ async function HandleMultiplePagesWindows()
 }
 
 
+async function HandleCaptureScreen()
+{
+    const today = new Date()
+    const yyyy = today.getFullYear()
+    let MM = today.getMonth() + 1
+    let dd = today.getDate()
+    let hh = today.getHours()
+    let mm = today.getMinutes()
+    let ss = today.getSeconds()
+
+    if (dd < 10) dd = '0' + dd
+    if (MM < 10) MM = '0' + MM
+
+    const formattedToday = MM + dd + yyyy + '_' + hh + mm + ss
+
+    await driver.get('https://testautomationpractice.blogspot.com/')
+
+    let screenshotWindow = await driver.takeScreenshot();
+    await writeFileSync('Captures/window_'+formattedToday+'.png', screenshotWindow, 'base64');
+
+    let droppableElement = await driver.findElement(By.xpath('//div[@id="droppable"]'))
+    let screenshotElement = await droppableElement.takeScreenshot(true);
+    await writeFileSync('Captures/element_'+formattedToday+'.png', screenshotElement, 'base64');
+}
+
+import {Google} from './page.js'
+async function HandleUsingClass()
+{
+    const GoogleInstance = new Google(driver)
+
+    await GoogleInstance.openPage()
+    await GoogleInstance.searchKeyword()
+}
+
+
 async function StartTest()
 {
     await HandleInputandRadio()
@@ -559,6 +595,8 @@ async function StartTest()
     await HandleUploadFiles()
     await HandlePagesWindows()
     await HandleMultiplePagesWindows()
+    await HandleCaptureScreen()
+    await HandleUsingClass()
 
     await driver.sleep(3000)
     await driver.quit()

@@ -10,5 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "selenium-webdriver": "^4.8.1"
-  }
+  },
+  "type": "module"
 }
