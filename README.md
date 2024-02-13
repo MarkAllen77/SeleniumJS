@@ -34,6 +34,6 @@
   </tr>
   <tr>
     <td>page.js</td>
-    <td>used as a an export file for the POM pattern</td>
+    <td>used as an export file for the POM pattern</td>
   </tr>
 </table>
