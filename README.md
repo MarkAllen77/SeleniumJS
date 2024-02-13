@@ -20,6 +20,18 @@
   &nbsp;&nbsp;&nbsp; HandleCaptureScreen<br />
   &nbsp;&nbsp;&nbsp; HandleUsingClass<br />
 <br />
+table, td, th {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  text-align: left;
+}
 **JAVASCRIPT FILES:**<br />
 <table>
   <tr>
@@ -28,10 +40,10 @@
   </tr>
   <tr>
     <td>main.js</td>
-    <td>page.js</td>
+    <td>contains all the asynchronous functions listed</td>
   </tr>
   <tr>
-    <td>contains all the asynchronous functions listed</td>
+    <td>page.js</td>
     <td>used as a an export file for the POM pattern</td>
   </tr>
 </table>
