@@ -20,22 +20,9 @@
   &nbsp;&nbsp;&nbsp; HandleCaptureScreen<br />
   &nbsp;&nbsp;&nbsp; HandleUsingClass<br />
 <br />
-<style>
-table, td, th {
-  border: 1px solid black;
-}
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th {
-  text-align: left;
-}
-</style>
 **JAVASCRIPT FILES:**<br />
-<table>
+<table align="left">
   <tr>
     <th>File</th>
     <th>Description</th>
