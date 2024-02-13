@@ -4,12 +4,16 @@
   "description": "selenium with js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "testcomment": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "selenium-webdriver": "^4.8.1"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
