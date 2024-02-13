@@ -1,6 +1,6 @@
 # Selenium Node using Javascript
 **PROGRAMMING LANGUAGE:** *Javascript on VSCode*<br />
-**INTRO:** *Javascript code using Selenum in handling different objects in a web application*<br /> 
+**INTRO:** *Javascript code using Selenum in handling different objects in a web application. Sample functions were translated from the PLaywright code.*<br /> 
 **FUNCTIONS:**<br />
   &nbsp;&nbsp;&nbsp; HandleInputandRadio<br />
   &nbsp;&nbsp;&nbsp; HandleDropdown<br />
