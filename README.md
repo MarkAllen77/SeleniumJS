@@ -20,10 +20,9 @@
   &nbsp;&nbsp;&nbsp; HandleCaptureScreen<br />
   &nbsp;&nbsp;&nbsp; HandleUsingClass<br />
 <br />
-
 **JAVASCRIPT FILES:**<br />
-<table align="left">
-  <tr>
+<table>
+  <tr align="left">
     <th>File</th>
     <th>Description</th>
   </tr>
