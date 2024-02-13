@@ -20,3 +20,22 @@
   &nbsp;&nbsp;&nbsp; HandleCaptureScreen<br />
   &nbsp;&nbsp;&nbsp; HandleUsingClass<br />
 <br />
+<br />
+**JAVASCRIPT FILES:**<br />
+<table>
+  <tr>
+    <th>Company</th>
+    <th>Contact</th>
+    <th>Country</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>Centro comercial Moctezuma</td>
+    <td>Francisco Chang</td>
+    <td>Mexico</td>
+  </tr>
+</table>
