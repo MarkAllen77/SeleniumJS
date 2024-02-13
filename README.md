@@ -20,22 +20,18 @@
   &nbsp;&nbsp;&nbsp; HandleCaptureScreen<br />
   &nbsp;&nbsp;&nbsp; HandleUsingClass<br />
 <br />
-<br />
 **JAVASCRIPT FILES:**<br />
 <table>
   <tr>
-    <th>Company</th>
-    <th>Contact</th>
-    <th>Country</th>
+    <th>File</th>
+    <th>Description</th>
   </tr>
   <tr>
-    <td>Alfreds Futterkiste</td>
-    <td>Maria Anders</td>
-    <td>Germany</td>
+    <td>main.js</td>
+    <td>page.js</td>
   </tr>
   <tr>
-    <td>Centro comercial Moctezuma</td>
-    <td>Francisco Chang</td>
-    <td>Mexico</td>
+    <td>contains all the asynchronous functions listed</td>
+    <td>used as a an export file for the POM pattern</td>
   </tr>
 </table>
