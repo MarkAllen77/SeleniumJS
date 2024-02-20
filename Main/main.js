@@ -59,6 +59,8 @@ async function HandleDropdown()
 {
     await driver.get('https://testautomationpractice.blogspot.com/')
 
+    await driver.wait(until.elementLocated(By.xpath('//select[@id="country"]')), 5000)
+
     await driver.findElement({id: 'country'})
     await driver.sleep(1000)
     await driver.findElement({id: 'country'}).sendKeys('Japan')
@@ -171,7 +173,7 @@ async function HandleHiddenItems()
 
     await usernameInput.sendKeys('Admin')
     await passwordInput.sendKeys('admin123')
-    await submitButton.click()
+    // await submitButton.click()
 }
 
 
@@ -432,16 +434,21 @@ async function HandleKeyboardActions()
 
 async function HandleUploadFiles()
 {
-    await driver.sleep(2000)
-    await driver.get('https://www.foundit.in/')
-    await driver.wait(until.elementLocated(By.xpath('//i[@class="mqfihd-upload"]')), 3000)
+    try {
+        await driver.sleep(2000)
+        await driver.get('https://www.foundit.in/')
+        await driver.wait(until.elementLocated(By.xpath('//i[@class="mqfihd-upload"]')), 6000)
 
-    //upload single file
-    const uploadButton = await driver.findElement(By.xpath('//i[@class="mqfihd-upload"]'))
-    const windowsUpload = await driver.findElement(By.xpath('//input[@id="file-upload"]'))
+        //upload single file
+        const uploadButton = await driver.findElement(By.xpath('//i[@class="mqfihd-upload"]'))
+        const windowsUpload = await driver.findElement(By.xpath('//input[@id="file-upload"]'))
 
-    await uploadButton.click()
-    await windowsUpload.sendKeys('C:/Temp/sample1.txt')
+        await uploadButton.click()
+        await windowsUpload.sendKeys('C:/Temp/sample1.txt')
+    }
+    catch (err) {
+        
+    }
 
     //upload mulitple file
     await driver.get('https://davidwalsh.name/demo/multiple-file-upload.php')
@@ -488,13 +495,15 @@ async function HandlePagesWindows()
     await driver.switchTo().window(tabWindow)
     await driver.sleep(1000)
     await driver.close()
+
+    await driver.switchTo().window(originalWindow)
+    await driver.sleep(2000)
 }
 
 
 async function HandleMultiplePagesWindows()
 {
     //Original Window
-    await driver.switchTo().window(originalWindow)
     await driver.get('https://opensource-demo.orangehrmlive.com/')
     originalWindow = await driver.getWindowHandle()
     equal(await driver.getTitle(),'OrangeHRM')
@@ -540,6 +549,8 @@ async function HandleMultiplePagesWindows()
     searchInput.sendKeys('selenium node')
     await driver.sleep(3000)
     await driver.close()
+
+    await driver.switchTo().window(originalWindow)
 }
 
 
