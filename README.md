@@ -36,4 +36,8 @@
     <td>page.js</td>
     <td>used as an export file for the POM pattern</td>
   </tr>
+  <tr>
+    <td>single.test.js</td>
+    <td>incorporating Jest test framework and Allure test reporting</td>
+  </tr>  
 </table>
