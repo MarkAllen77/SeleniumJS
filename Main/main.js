@@ -535,7 +535,7 @@ async function HandleMultiplePagesWindows()
     console.log('Number of Window(s): ', totalWindows)
 
     await driver.switchTo().window(originalWindow)
-    const usernameInput = await driver.findElement(By.xpath('//input[@placeholder="Username"]'))
+    const usernameInput = await driver.findElement(By.xpath('//input[@name="username"]'))
     usernameInput.sendKeys('username123')
     await driver.sleep(3000)
  
@@ -579,6 +579,12 @@ async function HandleCaptureScreen()
     await writeFileSync('Captures/element_'+formattedToday+'.png', screenshotElement, 'base64');
 }
 
+async function ExecutionEnd() {
+    console.log('---- EXECUTION COMPLETE ----')
+    await driver.sleep(3000)
+    await driver.quit()
+}
+
 import {Google} from './page.js'
 async function HandleUsingClass()
 {
@@ -608,9 +614,7 @@ async function StartTest()
     await HandleMultiplePagesWindows()
     await HandleCaptureScreen()
     await HandleUsingClass()
-
-    await driver.sleep(3000)
-    await driver.quit()
+    await ExecutionEnd()
 }
 
 StartTest()
