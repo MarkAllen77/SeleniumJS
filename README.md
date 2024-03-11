@@ -34,7 +34,7 @@
   </tr>
   <tr>
     <td>page.js</td>
-    <td>used as an export file for the POM pattern</td>
+    <td>used as an import file for the POM pattern</td>
   </tr>
   <tr>
     <td>single.test.js</td>
