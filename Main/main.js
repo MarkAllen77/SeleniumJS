@@ -610,11 +610,11 @@ async function StartTest()
     // await HandleMouseActions()
     // await HandleKeyboardActions()
     // await HandleUploadFiles()
-    await HandlePagesWindows()
+    //await HandlePagesWindows()
     // await HandleMultiplePagesWindows()
     // await HandleCaptureScreen()
     // await HandleUsingClass()
-    await ExecutionEnd()
+    //await ExecutionEnd()
 }
 
 StartTest()
