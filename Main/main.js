@@ -500,7 +500,6 @@ async function HandlePagesWindows()
     await driver.sleep(2000)
 }
 
-
 async function HandleMultiplePagesWindows()
 {
     //Original Window
@@ -553,7 +552,6 @@ async function HandleMultiplePagesWindows()
     await driver.switchTo().window(originalWindow)
 }
 
-
 async function HandleCaptureScreen()
 {
     const today = new Date()
@@ -563,17 +561,12 @@ async function HandleCaptureScreen()
     let hh = today.getHours()
     let mm = today.getMinutes()
     let ss = today.getSeconds()
-
     if (dd < 10) dd = '0' + dd
     if (MM < 10) MM = '0' + MM
-
     const formattedToday = MM + dd + yyyy + '_' + hh + mm + ss
-
     await driver.get('https://testautomationpractice.blogspot.com/')
-
     let screenshotWindow = await driver.takeScreenshot();
     await writeFileSync('Captures/window_'+formattedToday+'.png', screenshotWindow, 'base64');
-
     let droppableElement = await driver.findElement(By.xpath('//div[@id="droppable"]'))
     let screenshotElement = await droppableElement.takeScreenshot(true);
     await writeFileSync('Captures/element_'+formattedToday+'.png', screenshotElement, 'base64');
@@ -589,7 +582,6 @@ import {Google} from './page.js'
 async function HandleUsingClass()
 {
     const GoogleInstance = new Google(driver)
-
     await GoogleInstance.openPage()
     await GoogleInstance.searchKeyword()
 }
